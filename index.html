@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Zipf's German — Top 1000 Word Flashcards</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇩🇪</text></svg>">
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <h1>Zipf&rsquo;s German</h1>
+      <p class="subtitle">The <span id="deck-size">1000</span> most frequent German words</p>
+    </header>
+
+    <section class="scoreboard" aria-label="Session score">
+      <div class="stat"><span class="stat-value" id="stat-seen">0</span><span class="stat-label">seen</span></div>
+      <div class="stat stat-correct"><span class="stat-value" id="stat-correct">0</span><span class="stat-label">correct</span></div>
+      <div class="stat stat-wrong"><span class="stat-value" id="stat-wrong">0</span><span class="stat-label">wrong</span></div>
+      <div class="stat"><span class="stat-value" id="stat-skipped">0</span><span class="stat-label">skipped</span></div>
+      <div class="stat"><span class="stat-value" id="stat-streak">0</span><span class="stat-label">streak</span></div>
+    </section>
+
+    <section class="card" aria-live="polite">
+      <p class="card-counter"><span id="card-index">1</span> / <span id="card-total">1000</span></p>
+      <p class="word" id="word">&hellip;</p>
+      <p class="translation" id="translation" hidden></p>
+      <p class="feedback" id="feedback" role="status" hidden></p>
+    </section>
+
+    <form class="answer-form" id="answer-form" autocomplete="off">
+      <input
+        type="text"
+        id="answer-input"
+        class="answer-input"
+        placeholder="Type the English meaning&hellip;"
+        aria-label="English meaning"
+        autocapitalize="none"
+        autocorrect="off"
+        spellcheck="false">
+      <button type="submit" class="btn btn-check" id="btn-check">Check</button>
+    </form>
+
+    <div class="actions">
+      <button type="button" class="btn btn-skip" id="btn-skip">Skip</button>
+      <button type="button" class="btn btn-reveal" id="btn-reveal">Show translation</button>
+    </div>
+
+    <footer class="footer">
+      <button type="button" class="link-btn" id="btn-shuffle">Shuffle deck</button>
+      <button type="button" class="link-btn" id="btn-reset">Reset score</button>
+      <p class="hint">Enter to check &middot; Enter again for the next card</p>
+    </footer>
+  </main>
+
+  <script src="words.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
