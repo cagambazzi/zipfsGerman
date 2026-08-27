@@ -14,6 +14,10 @@ npx http-server -p 8080 .
 ## How it works
 
 - A German word is shown in the middle of the card.
+- The **range slider** above the card picks which slice of the frequency list
+  you drill: the left handle sets the first rank, the right handle the last.
+  Top 100, the whole list, or a band such as 800-1018 all work. Releasing a
+  handle rebuilds and reshuffles the deck from that slice.
 - **Skip** moves to the next word (counts as skipped).
 - **Show translation** reveals the English meaning (also counts as skipped).
 - Type the English meaning in the text field and press **Check** (or Enter) to
