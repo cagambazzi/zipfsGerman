@@ -12,6 +12,12 @@ const els = {
   reveal: document.getElementById('btn-reveal'),
   shuffle: document.getElementById('btn-shuffle'),
   reset: document.getElementById('btn-reset'),
+  rangeMin: document.getElementById('range-min'),
+  rangeMax: document.getElementById('range-max'),
+  rangeFrom: document.getElementById('range-from'),
+  rangeTo: document.getElementById('range-to'),
+  rangeFill: document.getElementById('range-fill'),
+  rangeCount: document.getElementById('range-count'),
   cardIndex: document.getElementById('card-index'),
   cardTotal: document.getElementById('card-total'),
   deckSize: document.getElementById('deck-size'),
@@ -25,6 +31,7 @@ const els = {
 const state = {
   deck: [],
   position: 0,
+  range: { from: 1, to: WORDS.length }, // 1-based, inclusive, by frequency rank
   graded: false,   // the current card has been checked (right or wrong)
   resolved: false, // the current card is done; Enter now moves on
   score: { seen: 0, correct: 0, wrong: 0, skipped: 0, streak: 0 },
@@ -117,6 +124,11 @@ function shuffled(items) {
 
 function currentCard() {
   return state.deck[state.position];
+}
+
+/** The slice of the frequency list the slider currently selects. */
+function selectedWords() {
+  return WORDS.slice(state.range.from - 1, state.range.to);
 }
 
 /* ---------- rendering ---------- */
@@ -224,7 +236,7 @@ function nextCard() {
   state.resolved = false;
   state.position += 1;
   if (state.position >= state.deck.length) {
-    state.deck = shuffled(WORDS);
+    state.deck = shuffled(selectedWords());
     state.position = 0;
     renderCard();
     setFeedback('Deck finished — reshuffled, going again.', 'neutral');
@@ -239,11 +251,45 @@ function resetScore() {
 }
 
 function newDeck() {
-  state.deck = shuffled(WORDS);
+  state.deck = shuffled(selectedWords());
   state.position = 0;
   state.graded = false;
   state.resolved = false;
+  els.cardTotal.textContent = state.deck.length;
   renderCard();
+}
+
+/* ---------- range slider ---------- */
+
+/** Mirrors the two slider handles into the labels and the filled track. */
+function renderRange() {
+  const { from, to } = state.range;
+  const span = WORDS.length - 1;
+  const left = ((from - 1) / span) * 100;
+  const right = ((to - 1) / span) * 100;
+
+  els.rangeFrom.textContent = from;
+  els.rangeTo.textContent = to;
+  els.rangeCount.textContent = (to - from + 1) + (to - from === 0 ? ' card' : ' cards');
+  els.rangeFill.style.left = left + '%';
+  els.rangeFill.style.width = (right - left) + '%';
+
+  // Keep the lower handle reachable when both sit at the far right.
+  els.rangeMin.style.zIndex = from > WORDS.length - span * 0.1 ? '5' : '3';
+  els.rangeMax.style.zIndex = '4';
+}
+
+/** Reads both handles, keeps them from crossing, and updates the display. */
+function syncRange(movedMax) {
+  let from = Number(els.rangeMin.value);
+  let to = Number(els.rangeMax.value);
+  if (from > to) {
+    if (movedMax) from = to; else to = from;
+    els.rangeMin.value = from;
+    els.rangeMax.value = to;
+  }
+  state.range = { from, to };
+  renderRange();
 }
 
 /* ---------- wiring ---------- */
@@ -268,7 +314,24 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
-els.cardTotal.textContent = WORDS.length;
+[['rangeMin', false], ['rangeMax', true]].forEach(([key, isMax]) => {
+  els[key].addEventListener('input', () => syncRange(isMax));
+  els[key].addEventListener('change', () => {
+    syncRange(isMax);
+    newDeck();
+    setFeedback(
+      'Now drilling words ' + state.range.from + '–' + state.range.to +
+      ' (' + state.deck.length + ').',
+      'neutral'
+    );
+  });
+});
+
+els.rangeMin.max = WORDS.length;
+els.rangeMax.max = WORDS.length;
+els.rangeMin.value = 1;
+els.rangeMax.value = WORDS.length;
 els.deckSize.textContent = WORDS.length;
+syncRange(false);
 renderScore();
 newDeck();

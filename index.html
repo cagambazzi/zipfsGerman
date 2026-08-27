@@ -22,6 +22,20 @@
       <div class="stat"><span class="stat-value" id="stat-streak">0</span><span class="stat-label">streak</span></div>
     </section>
 
+    <section class="range-picker" aria-label="Word range">
+      <div class="range-head">
+        <span class="range-label">Words <strong id="range-from">1</strong>&ndash;<strong id="range-to">1000</strong> by frequency</span>
+        <span class="range-count" id="range-count">1000 cards</span>
+      </div>
+      <div class="range-slider">
+        <div class="range-track"></div>
+        <div class="range-fill" id="range-fill"></div>
+        <input type="range" id="range-min" min="1" max="1000" value="1" step="1" aria-label="First word in range">
+        <input type="range" id="range-max" min="1" max="1000" value="1000" step="1" aria-label="Last word in range">
+      </div>
+      <div class="range-scale"><span>most frequent</span><span>least frequent</span></div>
+    </section>
+
     <section class="card" aria-live="polite">
       <p class="card-counter"><span id="card-index">1</span> / <span id="card-total">1000</span></p>
       <p class="word" id="word">&hellip;</p>
